@@ -10,7 +10,7 @@ import {
 export const AuthSchema = mysqlTable(
     "auth",
     {
-      id: varchar("id", { length: 50 }).primaryKey(),
+      id: int("id").autoincrement().primaryKey(),
       username: varchar("user_name", { length: 100 }).notNull(),
       role: mysqlEnum("role", ["user", "admin"]).notNull(),
       email: varchar("email", { length: 100 }).notNull(),

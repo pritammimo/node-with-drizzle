@@ -8,12 +8,16 @@ import {
     uniqueIndex,
     text,
   } from "drizzle-orm/mysql-core";
-export const CartSchema = mysqlTable(
-    "cart",
+export const ProductSizeSchema = mysqlTable(
+    "productsize",
     {
       id: int("id").autoincrement().primaryKey(),
-      productid: int("product_id").notNull(),
-    userid: int("user_id").notNull(),
+      typeid: int("type_id").notNull(),
+      size: varchar("size", { length: 512 }).notNull(),
+      price:int("price"),
+      saleprice:int("saleprice"),
+      count:int("count"),
+      availablepincode:varchar("availablepin", { length: 768 }).notNull(),
       createdAt: datetime("created_at")
         .default(sql`CURRENT_TIMESTAMP`)
         .notNull(),

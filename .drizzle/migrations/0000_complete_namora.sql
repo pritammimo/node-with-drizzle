@@ -1,5 +1,5 @@
 CREATE TABLE `auth` (
-	`id` varchar(50) NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`user_name` varchar(100) NOT NULL,
 	`role` enum('user','admin') NOT NULL,
 	`email` varchar(100) NOT NULL,
@@ -9,8 +9,25 @@ CREATE TABLE `auth` (
 	CONSTRAINT `email_unique_idx` UNIQUE(`email`)
 );
 --> statement-breakpoint
+CREATE TABLE `category` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`categoryname` varchar(256) NOT NULL,
+	`categorytag` varchar(256),
+	`categoryimage` varchar(256) NOT NULL,
+	`minimum_quantity` int,
+	`categorystatus` varchar(512) NOT NULL,
+	`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT `category_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `product_to_category` (
+	`product_id` int NOT NULL,
+	`category_id` int NOT NULL,
+	CONSTRAINT `product_to_category_category_id_product_id` PRIMARY KEY(`category_id`,`product_id`)
+);
+--> statement-breakpoint
 CREATE TABLE `products` (
-	`id` varchar(50) NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(256) NOT NULL,
 	`status` varchar(256),
 	`brand` varchar(256) NOT NULL,
@@ -22,7 +39,7 @@ CREATE TABLE `products` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` varchar(50) NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`full_name` varchar(100) NOT NULL,
 	`phone` varchar(256),
 	`address` varchar(256),
@@ -31,5 +48,3 @@ CREATE TABLE `users` (
 	`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT `users_id` PRIMARY KEY(`id`)
 );
---> statement-breakpoint
-ALTER TABLE `users` ADD CONSTRAINT `users_authid_auth_id_fk` FOREIGN KEY (`authid`) REFERENCES `auth`(`id`) ON DELETE no action ON UPDATE no action;
