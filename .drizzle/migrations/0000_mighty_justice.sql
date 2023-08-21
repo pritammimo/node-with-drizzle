@@ -9,6 +9,18 @@ CREATE TABLE `auth` (
 	CONSTRAINT `email_unique_idx` UNIQUE(`email`)
 );
 --> statement-breakpoint
+CREATE TABLE `products` (
+	`id` varchar(50) NOT NULL,
+	`name` varchar(256) NOT NULL,
+	`status` varchar(256),
+	`brand` varchar(256) NOT NULL,
+	`minimum_quantity` int,
+	`type` varchar(256) NOT NULL,
+	`description` text NOT NULL,
+	`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT `products_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` varchar(50) NOT NULL,
 	`full_name` varchar(100) NOT NULL,
