@@ -6,7 +6,7 @@
   "scripts": {
     "db:generate": "drizzle-kit generate:mysql",
     "db:deploy": "node -r esbuild-register .drizzle/migrator.js",
-    "dev": "node -r esbuild-register src/app.js"
+    "dev": "nodemon -r esbuild-register src/index.js"
   },
   "devDependencies": {
     "drizzle-kit": "^0.19.12",
