@@ -1,3 +1,5 @@
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import { envConfig } from "../config/config";
 import * as mainSchema from "../db/schema/schema";
 // const pool = mysql.createPool({
