@@ -4,12 +4,12 @@ import { AuthSchema } from "../src/db/schema/auth-schema.js";
  import bcrypt from "bcryptjs";
 import { asyncHandler } from "../middleware/async.js";
 import { ErrorResponse } from "../utils/errorResponse.js";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 export const register=asyncHandler(async(req,res,next)=>{
   const {email,password,username,role}=req.body;
    const db=await connectToDb();
        const salt = bcrypt.genSaltSync(10);
-   const hash = bcrypt.hashSync(req.body.password, salt);
+   const hash = bcrypt.hashSync(password, salt);
     await db.insert(AuthSchema).values({
       email,
       username,
@@ -19,35 +19,30 @@ export const register=asyncHandler(async(req,res,next)=>{
     return res.status(200).json({message:"user has been created"});
 })
 
-export const login = (req, res) => {
+export const login =asyncHandler(async(req, res,next) => {
+  const {email,password}=req.body
+  if(!email || !password){
+    return next(new ErrorResponse('Please provide all details',400));
+  }
+  const db=await connectToDb();
+  const result = await db.select().from(AuthSchema).where(eq(AuthSchema.email,email));
+  if(result?.length ===0){
+    return next(new ErrorResponse("Emailid and password didn't match",400));
+  }
+    const isPasswordCorrect = bcrypt.compareSync(
+      password,
+      result[0].password
+    );
+        if (!isPasswordCorrect) {
+          return next(new ErrorResponse("Emailid and password didn't match",400));
+        }
+      
+    const token = jwt.sign({ id: result[0].id }, "jwtkey");
+    const { password:jwtpassword, ...data } = result[0];
+    console.log("r",data);
   //CHECK USER
-  return res.status(200).json("User has been login.");
-//   const q = "SELECT * FROM users WHERE username = ?";
-
-//   db.query(q, [req.body.username], (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     if (data.length === 0) return res.status(404).json("User not found!");
-
-//     //Check password
-//     const isPasswordCorrect = bcrypt.compareSync(
-//       req.body.password,
-//       data[0].password
-//     );
-
-//     if (!isPasswordCorrect)
-//       return res.status(400).json("Wrong username or password!");
-
-//     const token = jwt.sign({ id: data[0].id }, "jwtkey");
-//     const { password, ...other } = data[0];
-
-//     res
-//       .cookie("access_token", token, {
-//         httpOnly: true,
-//       })
-//       .status(200)
-//       .json(other);
-//   });
-};
+  return res.status(200).json({message:"successfully login",data,token});
+});
 
 export const logout = (req, res) => {
     return res.status(200).json("User has been logout.");
